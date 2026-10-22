@@ -61,6 +61,7 @@ A 98-second captioned walkthrough video of this path is delivered alongside this
 
 These need your accounts or your decisions, so they are switched off or left as drafts:
 
+- **Logging in before SMS works.** Set `ADMIN_LOGIN_CODE` (12+ characters, secret) and log in with your `ADMIN_PHONE` and that code. Everyone else's login codes appear in Admin → Messages sent, so for a small pilot you can pass them on by WhatsApp yourself. Remove it once SMS works.
 - **SMS and WhatsApp.** Set the Twilio or WhatsApp variables in `.env.example`. Indian SMS needs DLT registration of your sender ID and templates; WhatsApp needs approved templates for messages outside a 24-hour window. Until then, login codes only appear in Admin → Messages sent, so real users cannot log in.
 - **AI photo check.** Set `ANTHROPIC_API_KEY`. It is covered by tests with a fake API, but has not been run against the live API: try it on 10 to 20 real listings and tune the prompt in `src/check.js`.
 - **Terms and privacy** are drafts. Have a lawyer review them.

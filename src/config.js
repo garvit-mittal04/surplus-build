@@ -10,6 +10,9 @@ export function loadConfig(overrides = {}) {
     // A fixed OTP for local development and tests. NEVER set this in production.
     devOtp: env.DEV_OTP || '',
     adminPhone: env.ADMIN_PHONE || '',
+    // A long secret that logs in ADMIN_PHONE without an SMS. For launching before SMS is set up.
+    // Must be at least 12 characters; works only for the admin number.
+    adminLoginCode: env.ADMIN_LOGIN_CODE || '',
     // Lots whose total asking value is at or above this need an on-site inspection.
     inspectThreshold: num(env.INSPECT_THRESHOLD, 50000),
     // What an inspector earns per completed inspection, in rupees.

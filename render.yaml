@@ -17,6 +17,8 @@ services:
         value: "true"
       - key: ADMIN_PHONE
         sync: false
+      - key: ADMIN_LOGIN_CODE
+        sync: false
       - key: BASE_URL
         sync: false
       - key: ANTHROPIC_API_KEY

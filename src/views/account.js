@@ -15,7 +15,7 @@ ${devNote ? html`<p class="pill">${icon('info', 'icon sm')} ${devNote}</p>` : ''
 <form method="post" action="/verify" class="stack">
   <input type="hidden" name="phone" value="${phone}">
   <input type="hidden" name="next" value="${next}">
-  <label>Code <input name="code" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required autofocus></label>
+  <label>Code <input name="code" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="64" required autofocus></label>
   <button class="btn block">Continue ${icon('arrow', 'icon sm')}</button>
 </form>
 <form method="post" action="/login" class="center small"><input type="hidden" name="phone" value="${phone}"><input type="hidden" name="next" value="${next}"><button class="link">Send a new code</button></form>`

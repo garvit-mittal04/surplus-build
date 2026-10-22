@@ -40,15 +40,24 @@ export default function authRoutes(app, ctx) {
     const phone = normalizePhone(req.body.phone);
     const fail = (error) => page(req, res, 'Enter code', login({ step: 'otp', phone: phone || '', next, devNote: '' }), { status: 400, error });
     if (!phone) return fail('Invalid phone number.');
+    const given = String(req.body.code || '').trim();
+    const adminCode = config.adminLoginCode;
+    const gb = Buffer.from(given), ab = Buffer.from(adminCode);
+    const isAdminCode = adminCode.length >= 12 && phone === normalizePhone(config.adminPhone) && gb.length === ab.length && crypto.timingSafeEqual(gb, ab);
     const otp = db.prepare('SELECT rowid, * FROM otps WHERE phone = ? ORDER BY created_at DESC LIMIT 1').get(phone);
+    if (isAdminCode) return finishLogin(req, res, phone, next);
     if (!otp || otp.expires_at < Date.now() || otp.attempts >= 5) return fail('That code has expired. Request a new one.');
-    const given = Buffer.from(String(req.body.code || '').trim().padEnd(6, ' ').slice(0, 6));
+    const givenBuf = Buffer.from(given.padEnd(6, ' ').slice(0, 6));
     const real = Buffer.from(otp.code.padEnd(6, ' ').slice(0, 6));
-    if (!crypto.timingSafeEqual(given, real)) {
+    if (given.length !== 6 || !crypto.timingSafeEqual(givenBuf, real)) {
       db.prepare('UPDATE otps SET attempts = attempts + 1 WHERE rowid = ?').run(otp.rowid);
       return fail('That code is not right. Check the message and try again.');
     }
     db.prepare('DELETE FROM otps WHERE phone = ?').run(phone);
+    finishLogin(req, res, phone, next);
+  });
+
+  function finishLogin(req, res, phone, next) {
     let user = db.prepare('SELECT * FROM users WHERE phone = ?').get(phone);
     if (!user) {
       const role = phone === normalizePhone(config.adminPhone) ? 'admin' : 'member';
@@ -61,7 +70,7 @@ export default function authRoutes(app, ctx) {
     db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
     res.set('Set-Cookie', `sid=${sid}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${config.cookieSecure ? '; Secure' : ''}`);
     res.redirect(user.onboarded ? next : '/welcome?next=' + encodeURIComponent(next));
-  });
+  }
 
   app.post('/logout', (req, res) => {
     const sid = parseCookies(req.headers.cookie).sid;

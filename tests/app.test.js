@@ -97,6 +97,25 @@ test('login: validation, wrong code, first login goes to onboarding', async () =
   s.close();
 });
 
+test('admin login code works only for the admin number and only when long enough', async () => {
+  const code = 'pilot-secret-2026';
+  const s = await start({ devOtp: '', adminLoginCode: code });
+  const c = new Client(s.base);
+  await c.req('/login', { method: 'POST', form: { phone: ADMIN } });
+  const ok = await c.req('/verify', { method: 'POST', form: { phone: ADMIN, code, next: '/admin' } });
+  assert.match(ok.loc, /^\/welcome/);
+  const other = new Client(s.base);
+  await other.req('/login', { method: 'POST', form: { phone: SELLER } });
+  assert.equal((await other.req('/verify', { method: 'POST', form: { phone: SELLER, code } })).status, 400);
+  assert.equal((await new Client(s.base).req('/verify', { method: 'POST', form: { phone: ADMIN, code: 'pilot-secret-2025' } })).status, 400);
+  s.close();
+  const weak = await start({ devOtp: '', adminLoginCode: 'short' });
+  const w = new Client(weak.base);
+  await w.req('/login', { method: 'POST', form: { phone: ADMIN } });
+  assert.equal((await w.req('/verify', { method: 'POST', form: { phone: ADMIN, code: 'short' } })).status, 400);
+  weak.close();
+});
+
 test('open redirects and cross-site posts are blocked', async () => {
   const s = await start();
   const c = new Client(s.base);
