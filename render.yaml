@@ -1,0 +1,29 @@
+# Render blueprint: New > Blueprint > pick this repo. Check Render's current plans:
+# a persistent disk (needed for the database and photos) is not available on the free plan.
+services:
+  - type: web
+    name: surplus-build
+    runtime: docker
+    plan: starter
+    healthCheckPath: /healthz
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ADMIN_PHONE
+        sync: false
+      - key: BASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM
+        sync: false

@@ -1,0 +1,10 @@
+{
+  "name": "Surplus Build",
+  "short_name": "Surplus",
+  "description": "Verified surplus building materials near you.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5f1",
+  "theme_color": "#0f766e",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
