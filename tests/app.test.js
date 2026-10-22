@@ -440,6 +440,12 @@ test('AI check: a matching read passes, mismatches flag the lot, an API failure 
   s.close();
 });
 
+test('timestamps are shown in Indian time', async () => {
+  const { localTime, localDate } = await import('../src/html.js');
+  assert.equal(localTime('2026-10-22 06:36:18'), '22 Oct, 12:06 pm');
+  assert.equal(localDate('2026-10-22 20:00:00'), '23 Oct 2026');
+});
+
 test('rule and AI comparison units', () => {
   const db = openDb(':memory:');
   const base = { id: 1, grade: 'B', storage: 'indoor', age_months: 1, retail_unit_price: 100 };

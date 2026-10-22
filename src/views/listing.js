@@ -1,4 +1,4 @@
-import { html, raw, inr } from '../html.js';
+import { html, raw, inr, localDate } from '../html.js';
 import { icon } from './icons.js';
 import { CATEGORIES, CITIES, GRADES, GRADE_HELP } from '../config.js';
 import { listingCard, gradeBadge, discountPct, sellerTrust, empty, statusBadge } from './components.js';
@@ -85,7 +85,7 @@ export function listingPage({ l, photos, user, enquiry, isOwner, trust, similar,
     ${l.description ? html`<p class="desc">${l.description}</p>` : ''}
     ${inspection ? html`<div class="panel inspected">
       <h3>${icon('shield', 'icon sm')} Inspected on site</h3>
-      <p class="small">On ${(inspection.done_at || '').slice(0, 10)} an inspector counted ${inspection.counted_qty} ${l.unit} and confirmed grade ${inspection.grade_confirmed}.</p>
+      <p class="small">On ${localDate(inspection.done_at)} an inspector counted ${inspection.counted_qty} ${l.unit} and confirmed grade ${inspection.grade_confirmed}.</p>
       ${inspection.photos.length ? html`<div class="review-photos">${inspection.photos.map((p) => html`<a href="/uploads/${p.file}" target="_blank" rel="noopener"><img src="/uploads/${p.file}" alt="Inspection photo" loading="lazy"></a>`)}</div>` : ''}
     </div>` : ''}
 

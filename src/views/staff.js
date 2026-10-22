@@ -1,4 +1,4 @@
-import { html, raw, inr } from '../html.js';
+import { html, raw, inr, localTime } from '../html.js';
 import { icon } from './icons.js';
 import { statusBadge, empty } from './components.js';
 
@@ -130,5 +130,5 @@ ${u.id === me.id ? u.role : html`<form method="post" action="/admin/user/${u.id}
 
 <h2>Messages sent</h2>
 <p class="small muted">Every SMS and WhatsApp message, including login codes. “Logged” means no provider is configured yet, so nothing was actually sent.</p>
-<div class="table-wrap"><table><thead><tr><th>When</th><th>To</th><th>Via</th><th>Status</th><th>Message</th></tr></thead><tbody>${outbox.map((o) => html`<tr><td class="nowrap">${o.created_at}</td><td>${o.to_phone}</td><td>${o.channel}</td><td>${o.status}${o.error ? html`<span class="small muted block">${o.error}</span>` : ''}</td><td>${o.body}</td></tr>`)}</tbody></table></div>`;
+<div class="table-wrap"><table><thead><tr><th>When (IST)</th><th>To</th><th>Via</th><th>Status</th><th>Message</th></tr></thead><tbody>${outbox.map((o) => html`<tr><td class="nowrap">${localTime(o.created_at)}</td><td>${o.to_phone}</td><td>${o.channel}</td><td>${o.status}${o.error ? html`<span class="small muted block">${o.error}</span>` : ''}</td><td>${o.body}</td></tr>`)}</tbody></table></div>`;
 }

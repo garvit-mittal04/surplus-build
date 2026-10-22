@@ -1,4 +1,4 @@
-import { html, raw, inr } from '../html.js';
+import { html, raw, inr, localDate, localTime } from '../html.js';
 import { icon } from './icons.js';
 import { CATEGORIES, CITIES } from '../config.js';
 import { statusBadge, statusHelp, lotTimeline, empty } from './components.js';
@@ -146,7 +146,7 @@ ${received.map((e) => html`<tr class="${e.status === 'open' ? 'hot' : ''}">
         ? html`${e.sold_total
             ? html`<span class="badge st-sold">Sold · ${inr(e.sold_total)}</span>`
             : e.reserving
-              ? html`<span class="badge st-accepted">Reserved until ${e.reserved_until.slice(0, 10)}</span>`
+              ? html`<span class="badge st-accepted">Reserved until ${localTime(e.reserved_until)}</span>`
               : html`<span class="badge st-open">Reservation expired</span>`}
           <span class="block small">${e.buyer_name || 'Buyer'}, <a href="tel:${e.buyer_phone}">${e.buyer_phone}</a></span>
           ${!e.sold_total ? html`<span class="block small muted">After pickup, record the sale under Manage this lot.</span>` : ''}`
@@ -162,11 +162,11 @@ function buying({ sent }) {
     ? e.sold_total ? html`<span class="badge st-sold">Bought · ${inr(e.sold_total)}</span>`
       : e.reserving ? html`<span class="badge st-accepted">Reserved for you</span>` : html`<span class="badge st-open">Reservation expired</span>`
     : statusBadge(e.status)}</div>
-  <p class="small muted">You asked for ${e.qty} ${e.unit} on ${e.created_at.slice(0, 10)}.</p>
+  <p class="small muted">You asked for ${e.qty} ${e.unit} on ${localDate(e.created_at)}.</p>
   ${e.status === 'open' ? html`<p class="small">${icon('clock', 'icon xs')} Waiting for the seller. We will message you when they respond.</p>` : ''}
   ${e.status === 'declined' ? html`<p class="small">The seller declined. <a href="/browse?category=${e.category}">See similar lots</a>.</p>` : ''}
   ${e.status === 'accepted' && !e.sold_total ? html`<p class="small">${e.reserving
-      ? html`${icon('clock', 'icon xs')} Held for you until ${e.reserved_until.slice(0, 10)}. Arrange pickup with the seller before then.`
+      ? html`${icon('clock', 'icon xs')} Held for you until ${localTime(e.reserved_until)}. Arrange pickup with the seller before then.`
       : html`${icon('alert', 'icon xs')} The reservation has expired. Call the seller to check the stock is still available before you travel.`}</p>` : ''}
   ${e.status === 'accepted' ? html`<div class="pickup">
       <p>${icon('pin', 'icon sm')} <strong>${e.address}</strong></p>

@@ -2,6 +2,7 @@ import { tx } from '../db.js';
 import { GRADES } from '../config.js';
 import { inspectorPage, inspectForm, adminPage } from '../views/staff.js';
 import { message } from '../views/guide.js';
+import { localDay } from '../html.js';
 
 export default function staffRoutes(app, ctx) {
   const { db, config, page, need, notify, getListing, userById, publish, goLive, saveImage, imageUpload, sniffImage } = ctx;
@@ -92,11 +93,11 @@ export default function staffRoutes(app, ctx) {
 
     const series = [];
     for (let i = 13; i >= 0; i--) {
-      const day = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+      const day = localDay(i);
       series.push({
         day,
-        listings: one('SELECT COUNT(*) n FROM listings WHERE substr(created_at, 1, 10) = ?', day).n,
-        enquiries: one('SELECT COUNT(*) n FROM enquiries WHERE substr(created_at, 1, 10) = ?', day).n,
+        listings: one("SELECT COUNT(*) n FROM listings WHERE date(created_at, '+330 minutes') = ?", day).n,
+        enquiries: one("SELECT COUNT(*) n FROM enquiries WHERE date(created_at, '+330 minutes') = ?", day).n,
       });
     }
 
